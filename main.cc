@@ -57,7 +57,17 @@ int main(void)
             continue;
         }
 
-        fft::compute_fft(fft_data);
+        double max_amp = 0.0;
+        double max_freq = 0.0;
+        for (const auto& bin : fft::compute_fft(fft_data))
+        {
+            if (bin.amplitude > max_amp)
+            {
+                max_freq = bin.frequency;
+                max_amp = bin.amplitude;
+            }
+        }
+        std::cout << "Max amplitude: " << max_amp << "\t at f=" << max_freq << "\n";
     }
 }
 

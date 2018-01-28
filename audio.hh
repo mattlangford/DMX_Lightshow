@@ -8,7 +8,7 @@ namespace audio
 {
 
 static constexpr size_t FRAMES_PER_BUFFER = 512;
-static constexpr size_t SAMPLE_RATE = 44000;
+static constexpr size_t SAMPLE_RATE = 44100;
 
 //
 // Exception defined for when something goes wrong with the portaudio engine
@@ -25,7 +25,8 @@ public: // public methods /////////////////////////////////////////////////////
     const char* what() const throw() override
     {
         std::stringstream err;
-        err << "An error occured while using the portaudio stream ( " << err_ << "): " << Pa_GetErrorText(err_) << "\n";
+        err << "An error occured while using the portaudio stream ( "
+            << err_ << "): " << Pa_GetErrorText(err_) << "\n";
         return err.str().c_str();
     }
 
@@ -81,7 +82,7 @@ public: // methods ////////////////////////////////////////////////////////////
     {
         PaStreamParameters inputParameters;
         inputParameters.device = device_;
-        inputParameters.channelCount = 2;
+        inputParameters.channelCount = 1;
         inputParameters.sampleFormat = paFloat32;
         inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
         inputParameters.hostApiSpecificStreamInfo = NULL;

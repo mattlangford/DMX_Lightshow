@@ -47,7 +47,7 @@ static inline double frequency_from_index(const size_t index, const std::vector<
         throw "div by zero!";
     }
 
-    const double frequency_factor = double(SAMPLE_RATE) / bins.size();
+    const double frequency_factor = double(SAMPLE_RATE) / (2 * bins.size());
     return index * frequency_factor;
 }
 
