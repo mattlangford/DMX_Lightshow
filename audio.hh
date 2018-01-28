@@ -4,9 +4,11 @@
 #include <exception>
 #include <sstream>
 
-#define SAMPLE_RATE 44000
+namespace audio
+{
 
 static constexpr size_t FRAMES_PER_BUFFER = 512;
+static constexpr size_t SAMPLE_RATE = 44000;
 
 //
 // Exception defined for when something goes wrong with the portaudio engine
@@ -129,4 +131,4 @@ private: // members ///////////////////////////////////////////////////////////
     //
     PaStream* stream;
 };
-
+}
