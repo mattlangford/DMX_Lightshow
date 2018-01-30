@@ -4,9 +4,11 @@ import numpy as np
 import os
 import wave
 import pickle
+import struct
 
 import cv2
 
+from matplotlib import pyplot as plt
 
 def load_audio(path):
     # Load audio files that match the label_names
@@ -19,11 +21,17 @@ def load_audio(path):
 
 
 def read_audio_file(audio_file):
-    audio_data_str = list(audio_file.readframes(audio_file.getnframes()))
-    audio_data = map(ord, audio_data_str)
 
-    mono = np.array(audio_data).reshape(-1, 2)
-    return np.average(mono, axis=1)
+    length = audio_file.getnframes()
+    audio_data = np.zeros(shape=(length))
+    for i in range(length):
+        frame = audio_file.readframes(1)
+        ch1 = struct.unpack("<h", frame[:2])[0]
+        ch2 = struct.unpack("<h", frame[-2:])[0]
+
+        audio_data[i] = 0.5 * (ch1 + ch2)
+
+    return audio_data
 
 
 def create_sonogram(audio_file, fft_size_samples, bin_length_seconds):
@@ -33,6 +41,7 @@ def create_sonogram(audio_file, fft_size_samples, bin_length_seconds):
     bins = []
     frame_num = 0
     data_left = len(audio_data)
+
     while data_left > 0:
         frames_processed = min(len(audio_data[frame_num:]), frames_per_bin)
         data_left -= frames_processed
@@ -40,6 +49,7 @@ def create_sonogram(audio_file, fft_size_samples, bin_length_seconds):
 
         fft_data_complex = np.fft.fft(audio_data[frame_num - fft_size_samples:frame_num], fft_size_samples)
         fft_data = np.absolute(fft_data_complex)[:fft_size_samples / 2]
+
         bins.append(np.copy(fft_data))
 
     sonogram = np.vstack(bins)
@@ -54,7 +64,7 @@ def get_args():
     args = parser.parse_args()
 
     if not os.path.exists(args.audio_folder):
-        raise "Not a valid path:", args.audio_folder
+        raise Exception("Not a valid path:", args.audio_folder)
 
     return args
 
