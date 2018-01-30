@@ -1,3 +1,5 @@
+#pragma once
+
 #include <complex>
 #include <valarray>
 
@@ -30,25 +32,32 @@ public: // methods ////////////////////////////////////////////////////////////
 
 //
 // Get the index in the bins array that corresponds to a particular frequency
+// This assumes the frequency bins are spaced equally!
 //
 static inline size_t index_from_frequency(const double frequency, const std::vector<FrequencyBin>& bins)
 {
+    if (bins.size() == 0)
+    {
+        throw "can't find index_from_frequency with zero bins";
+    }
+
     const double frequency_factor = double(bins.size()) / SAMPLE_RATE;
-    return static_cast<size_t>(frequency * frequency_factor);
+    return static_cast<size_t>((frequency - bins[0].frequency) * frequency_factor);
 }
 
 //
 // Get the frequency that corresponds to a particular index
+// This assumes the frequency bins are spaced equally!
 //
 static inline double frequency_from_index(const size_t index, const std::vector<FrequencyBin>& bins)
 {
     if (bins.size() == 0)
     {
-        throw "div by zero!";
+        throw "can't find frequency_from_index with zero bins";
     }
 
     const double frequency_factor = double(SAMPLE_RATE) / (2 * bins.size());
-    return index * frequency_factor;
+    return index * frequency_factor - bins[0].frequency;
 }
 
 //
@@ -102,7 +111,7 @@ static std::vector<FrequencyBin> compute_fft(const std::vector<ComplexT>& time_d
 //
 static std::vector<FrequencyBin> get_frequencies_in_range(const double frequency_min,
                                                           const double frequency_max,
-                                                          const std::vector<T>& fft_data)
+                                                          const std::vector<FrequencyBin>& fft_data)
 {
     const size_t index_min = index_from_frequency(frequency_min, fft_data);
     const size_t index_max = index_from_frequency(frequency_max, fft_data);
