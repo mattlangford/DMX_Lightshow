@@ -21,7 +21,6 @@ def load_audio(path):
 
 
 def read_audio_file(audio_file):
-
     length = audio_file.getnframes()
     audio_data = np.zeros(shape=(length))
     for i in range(length):
@@ -84,8 +83,7 @@ def main():
         if args.show:
             to_show = np.flipud(sonogram[:185, :])
             to_show = np.clip(to_show / np.percentile(to_show, 99), 0.0, 1.0)
-            print to_show
-            cv2.imshow(file_name, cv2.resize(to_show, (0, 0), fy=1.0, fx=0.2))
+            cv2.imshow(file_name, cv2.resize(to_show, (0, 0), fy=1.0, fx=0.5))
             cv2.waitKey(0)
 
 
