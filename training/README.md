@@ -7,4 +7,9 @@ I am using [this repo](https://github.com/CarlSouthall/MDBDrums) to get labeled 
  - CY: cymbol
  - OT: other
 
-Point the script to two folder, one with training data, one with audio data (wav files). The name of the label txt file should be the same as the wav file.
+
+There are three scripts that take different data:
+ - `generate_sonograms.py`: Take wav audio file, generate pickle file containing a numpy sonogram
+ - `parse_labeled_data.py`: Take those sonograms and then generate another pickle containing another numpy array which encodes which drum is active
+ - `generate_training_data.py` : Take the sonograms and labels and generate a numpy data file that contains images and labels for each label
+
