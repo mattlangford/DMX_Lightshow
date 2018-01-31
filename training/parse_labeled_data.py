@@ -28,9 +28,8 @@ def load_audio_sonogrames(path, label_names):
 
     return data
 
-
 def parse_labels(labels, sonogram_length, bin_length_seconds):
-    drums = defaultdict(list)
+    drums = {'KD': [], 'SD': [], 'HH': [], 'TT': [], 'CY': [], 'OT': []}
     for l in labels:
         time, drum = l.split('\t')
         time = float(time)
