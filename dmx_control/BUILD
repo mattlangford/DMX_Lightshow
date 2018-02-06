@@ -8,8 +8,16 @@ cc_library(
     deps=["@ftd2xx_libs//:ftd2xx"]
 )
 
+cc_library(
+    name="dmx_helpers",
+    srcs=["dmx.cc"],
+    hdrs=["dmx.hh"],
+    deps=[":serial_comms"]
+)
+
 cc_binary(
     name="test_dmx",
     srcs=["test_dmx.cc"],
-    deps=[":serial_comms"]
+    deps=[":serial_comms",
+          ":dmx_helpers"]
 )
