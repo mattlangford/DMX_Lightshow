@@ -1,10 +1,7 @@
 cc_library(
     name="serial_comms",
     srcs=["serial.cc"],
-    hdrs=["serial.hh",
-          "ftd2xx.h",
-          "WinTypes.h"
-    ],
+    hdrs=["serial.hh"],
     deps=["@ftd2xx_libs//:ftd2xx"]
 )
 
