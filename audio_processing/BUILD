@@ -3,8 +3,8 @@ cc_library(
     hdrs=["audio.hh",
           "fft_helpers.hh",
           "beat_finders.hh",
-          ":build_portaudio"
     ],
+    deps=["@portaudio_libs//:portaudio"]
 )
 
 cc_binary(

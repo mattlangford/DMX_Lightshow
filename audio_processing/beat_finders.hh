@@ -3,8 +3,9 @@
 #include "audio.hh"
 #include "fft_helpers.hh"
 
-namespace
+namespace Beats
 {
+
 template <typename T, size_t NUM_SAMPLES>
 class Averager
 {
@@ -24,10 +25,6 @@ private:
     size_t num_samples = 0;
     T avg = 0;
 };
-}
-
-namespace Beats
-{
 
 typedef fft::fft_helpers<float, audio::SAMPLE_RATE> fft;
 
