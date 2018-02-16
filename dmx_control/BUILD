@@ -8,7 +8,8 @@ cc_library(
 cc_library(
     name="dmx_helpers",
     srcs=["dmx.cc"],
-    hdrs=["dmx.hh"],
+    hdrs=["dmx.hh",
+          "bit_convert.hh"],
     deps=[":serial_comms"]
 )
 

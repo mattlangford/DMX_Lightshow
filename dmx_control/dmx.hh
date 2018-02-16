@@ -33,12 +33,13 @@ private: //////////////////////////////////////////////////////////////////////
     // Each channel is 11 bits (1 low start bit, 8 data bits, 2 high stop bits)
     static constexpr double CHANNEL_SECONDS = 44E-6;
     static constexpr size_t CHANNEL_BITS = BAUDRATE * CHANNEL_SECONDS;
+    static constexpr size_t NUM_CHANNELS = 512;
 
     // Generate the DMX header that goes at the start of each packet. This only needs to be generated once and
-    // is all done at compile time at >= -O1
-    static std::bitset<HEADER_LENGTH> generate_header();
+    // is all done at compile time at >= -O1 (most times)
+    static std::array<bool, HEADER_LENGTH> generate_header();
 
-    // Convert a single value from between 0 and 255 to a bitset properly sized for the BAUDRATE
-    static std::bitset<CHANNEL_BITS> generate_channel(const uint8_t level);
+    // Convert a single value from between 0 and 255 to an array properly sized for the BAUDRATE
+    static std::array<bool, CHANNEL_BITS> generate_channel(const uint8_t level);
 };
 }
