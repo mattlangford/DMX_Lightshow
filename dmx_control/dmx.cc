@@ -5,37 +5,33 @@ namespace dmx
 {
 serial::ByteVector_t dmx_helper::generate_message_from_channel(const channels_t& channels)
 {
-    // we will keep an ordered buffer of the channel data in this array, then using max address we will know
-    // what to serialize
-    // TODO: If lights aren't zero indexed, this will need to be 513
-    std::array<uint8_t, NUM_CHANNELS> ordered_channels{0};
+    // we will keep an ordered buffer of the channel data in this vector, which will be transformed into
+    // bits, headers added, and then serialized out
+    // TODO: Might need to do some stuff with the zero channel
+    std::vector<uint8_t> ordered_channels;
     for (const channel_t& channel : channels)
     {
+        // only resize if we need to
+        if (channel.address > ordered_channels.size())
+            ordered_channels.resize(channel.address + 1, 0);
+
         ordered_channels[channel.address] = channel.level;
     }
 
-    std::array<bool, HEADER_LENGTH + CHANNEL_BITS * NUM_CHANNELS> full_message;
-
+    std::vector<bool> full_bit_vector;
 
     // copy header, easy since it's at the start
-    size_t full_message_index = 0;
-    static std::array<bool, HEADER_LENGTH> header = generate_header();
-    for (; full_message_index < HEADER_LENGTH; ++full_message_index)
-    {
-        full_message[full_message_index] = header[full_message_index];
-    }
+    static const std::vector<bool> header = generate_header();
+    std::copy(header.begin(), header.end(), std::back_inserter(full_bit_vector));
 
     // copy each channel in, a little more difficult
-    for (size_t channel_index = 0; channel_index < NUM_CHANNELS; ++channel_index)
+    for (const uint8_t& channel : ordered_channels)
     {
-        std::array<bool, CHANNEL_BITS> channel = generate_channel(channels[channel_index].level);
-        for (size_t channel_bit = 0; channel_bit < CHANNEL_BITS; ++channel_bit, ++full_message_index)
-        {
-            full_message[full_message_index] = channel[channel_bit];
-        }
+        const std::vector<bool> channel_bits = generate_channel(channel);
+        std::copy(channel_bits.begin(), channel_bits.end(), std::back_inserter(full_bit_vector));
     }
 
-    auto message = bit_convert::convert(full_message);
+    auto message = packet_bits(full_bit_vector);
     return {message.begin(), message.end()};
 }
 
@@ -43,9 +39,10 @@ serial::ByteVector_t dmx_helper::generate_message_from_channel(const channels_t&
 // ############################################################################
 //
 
-std::array<bool, dmx_helper::HEADER_LENGTH> dmx_helper::generate_header()
+std::vector<bool> dmx_helper::generate_header()
 {
-    std::array<bool, HEADER_LENGTH> header;
+    std::vector<bool> header(HEADER_LENGTH);
+
     for (size_t i = 0; i < BREAK_SEQ_LEN_BITS; ++i)
     {
         constexpr bool BREAK_LEVEL = false;
@@ -64,13 +61,13 @@ std::array<bool, dmx_helper::HEADER_LENGTH> dmx_helper::generate_header()
 // ############################################################################
 //
 
-std::array<bool, dmx_helper::CHANNEL_BITS> dmx_helper::generate_channel(const uint8_t level)
+std::vector<bool> dmx_helper::generate_channel(const uint8_t level)
 {
     // make sure we're at 250kb/s
     constexpr size_t CHANNEL_BITS_250KBS = 11;
     static_assert(CHANNEL_BITS == CHANNEL_BITS_250KBS, "Not supporting non-250kbs baud rate for the time being");
 
-    std::array<bool, CHANNEL_BITS_250KBS> channel;
+    std::vector<bool> channel(CHANNEL_BITS_250KBS);
 
     // start and stop bits
     constexpr bool START_BIT = false;
@@ -88,5 +85,25 @@ std::array<bool, dmx_helper::CHANNEL_BITS> dmx_helper::generate_channel(const ui
     }
 
     return channel;
+}
+
+//
+// ############################################################################
+//
+
+std::vector<uint8_t> dmx_helper::packet_bits(std::vector<bool> bits)
+{
+    const size_t num_bytes = bits.size() / BYTE_SIZE;
+
+    std::vector<uint8_t> bytes(num_bytes, 0);
+    for (size_t byte = 0; byte < num_bytes; ++byte)
+    {
+        for (size_t bit = 0; bit < BYTE_SIZE; --bit)
+        {
+            bytes[byte] += bits[byte * BYTE_SIZE + bit] << bit;
+        }
+    }
+
+    return bytes;
 }
 }

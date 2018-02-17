@@ -6,6 +6,7 @@
 
 namespace dmx
 {
+static constexpr size_t BYTE_SIZE = 8;
 static constexpr size_t BAUDRATE = 250000;
 
 class dmx_helper
@@ -35,11 +36,14 @@ private: //////////////////////////////////////////////////////////////////////
     static constexpr size_t CHANNEL_BITS = BAUDRATE * CHANNEL_SECONDS;
     static constexpr size_t NUM_CHANNELS = 512;
 
-    // Generate the DMX header that goes at the start of each packet. This only needs to be generated once and
-    // is all done at compile time at >= -O1 (most times)
-    static std::array<bool, HEADER_LENGTH> generate_header();
+    // Generate the DMX header that goes at the start of each packet. This only needs to be generated once
+    static std::vector<bool> generate_header();
 
-    // Convert a single value from between 0 and 255 to an array properly sized for the BAUDRATE
-    static std::array<bool, CHANNEL_BITS> generate_channel(const uint8_t level);
+    // Convert a single value from between 0 and 255 to a vector properly sized for the BAUDRATE
+    static std::vector<bool> generate_channel(const uint8_t level);
+
+    // Take a full bitset and convert to a vector of uint8_t's. Optionally provide a max_byte to only generate
+    // a vector that is max_byte in length. The MSb in the bitset will be the MSb in index 0 of the result vector
+    static std::vector<uint8_t> packet_bits(std::vector<bool> bits);
 };
 }
