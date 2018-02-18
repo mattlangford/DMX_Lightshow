@@ -1,21 +1,25 @@
 #include "dmx.hh"
+#include <iostream>
 
 namespace dmx
 {
-serial::ByteVector_t dmx_helper::generate_message_from_channel(const channels_t& channels)
+serial::ByteVector_t dmx_helper::generate_message_from_channels(const channels_t& channels)
 {
     // we will keep an ordered buffer of the channel data in this vector, which will be transformed into
     // bits, headers added, and then serialized out
     // TODO: Might need to do some stuff with the zero channel
-    std::vector<uint8_t> ordered_channels;
+    std::vector<uint8_t> ordered_channels(NUM_CHANNELS);
+    size_t max_address = 0;
     for (const channel_t& channel : channels)
     {
-        // only resize if we need to
-        if (channel.address > ordered_channels.size())
-            ordered_channels.resize(channel.address + 1, 0);
+        if (channel.address > max_address)
+        {
+            max_address = channel.address;
+        }
 
         ordered_channels[channel.address] = channel.level;
     }
+    ordered_channels.resize(max_address + 1);
 
     std::vector<bool> full_bit_vector;
 
@@ -27,10 +31,12 @@ serial::ByteVector_t dmx_helper::generate_message_from_channel(const channels_t&
     for (const uint8_t& channel : ordered_channels)
     {
         const std::vector<bool> channel_bits = generate_channel(channel);
+
         std::copy(channel_bits.begin(), channel_bits.end(), std::back_inserter(full_bit_vector));
     }
 
     auto message = packet_bits(full_bit_vector);
+
     return {message.begin(), message.end()};
 }
 
@@ -97,9 +103,22 @@ std::vector<uint8_t> dmx_helper::packet_bits(std::vector<bool> bits)
     std::vector<uint8_t> bytes(num_bytes, 0);
     for (size_t byte = 0; byte < num_bytes; ++byte)
     {
-        for (size_t bit = 0; bit < BYTE_SIZE; --bit)
+        for (size_t bit = 0; bit < BYTE_SIZE; ++bit)
         {
-            bytes[byte] += bits[byte * BYTE_SIZE + bit] << bit;
+            bytes[byte] += bits[byte * BYTE_SIZE + bit] << (BYTE_SIZE - bit - 1);
+        }
+    }
+
+    // If the number of bits is not divisible by the size of a byte, we need to add an extra
+    // byte to the end
+    const size_t extra_bits = bits.size() % BYTE_SIZE;
+    if (extra_bits > 0)
+    {
+        bytes.push_back(0);
+        uint8_t& last_byte = bytes.back();
+        for (size_t bit = 0; bit < extra_bits; ++bit)
+        {
+            last_byte += bits[bits.size() - extra_bits + bit] << (BYTE_SIZE - bit - 1);
         }
     }
 

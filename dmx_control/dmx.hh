@@ -21,7 +21,7 @@ public: ///////////////////////////////////////////////////////////////////////
     typedef std::vector<channel_t> channels_t;
 
     // Serialize the channels into a byte stream to send over the wire, this will include the header
-    static serial::ByteVector_t generate_message_from_channel(const channels_t& channels);
+    static serial::ByteVector_t generate_message_from_channels(const channels_t& channels);
 
 private: //////////////////////////////////////////////////////////////////////
     // Header is 28 bits, with a break followed by the mark after break (MAB)

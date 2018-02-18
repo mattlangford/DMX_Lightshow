@@ -4,7 +4,7 @@ namespace lights
 {
 
 litake_basic_light::litake_basic_light(size_t start_address)
-    : start_address_(start_address), mod_state_value_(0)
+    : start_address_(start_address), mod_state_value_(255)
 {
 }
 
@@ -21,7 +21,6 @@ void litake_basic_light::set_color(uint8_t red, uint8_t green, uint8_t blue)
     color += green;
     color <<= 8;
     color += blue;
-    color <<= 8;
 
     light_state_.store(color, std::memory_order_relaxed);
 }

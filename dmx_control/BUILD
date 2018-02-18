@@ -17,5 +17,6 @@ cc_binary(
     name="test_dmx",
     srcs=["test_dmx.cc"],
     deps=[":serial_comms",
-          ":dmx_helpers"]
+          ":dmx_helpers",
+          "//dmx_control/lights:litake_basic_light"]
 )
