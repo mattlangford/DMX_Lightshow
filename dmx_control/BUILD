@@ -8,8 +8,8 @@ cc_library(
 cc_library(
     name="dmx_helpers",
     srcs=["dmx.cc"],
-    hdrs=["dmx.hh",
-          "bit_convert.hh"],
+    hdrs=["dmx.hh"],
+    visibility = ["//visibility:public"],
     deps=[":serial_comms"]
 )
 

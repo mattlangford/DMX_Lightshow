@@ -1,5 +1,4 @@
 #include "dmx.hh"
-#include "bit_convert.hh"
 
 namespace dmx
 {
