@@ -28,19 +28,19 @@ private:
 
 typedef fft::fft_helpers<float, audio::SAMPLE_RATE> fft;
 
-class DumbBeatFinder
+class dumb_beat_finder
 {
 public: // constructor ///////////////////////////////////////////////////////
-    DumbBeatFinder() = default;
+    dumb_beat_finder() = default;
 
 public: // methods ////////////////////////////////////////////////////////////
     //
     // Add a new sample to the detector
     //
-    void add_sample(const std::vector<fft::FrequencyBin>& bins)
+    void add_sample(const std::vector<fft::frequency_bin_t>& bins)
     {
         double power = 0;
-        for (const fft::FrequencyBin& bin : bins)
+        for (const fft::frequency_bin_t& bin : bins)
         {
             power += bin.amplitude;
         }

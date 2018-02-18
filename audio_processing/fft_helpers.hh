@@ -22,7 +22,7 @@ typedef std::valarray<ComplexT> CArray;
 //
 // A single frequency bin
 //
-struct FrequencyBin
+struct frequency_bin_t
 {
     double frequency; // hz
     double amplitude; // dB? Not sure
@@ -34,7 +34,7 @@ public: // methods ////////////////////////////////////////////////////////////
 // Get the index in the bins array that corresponds to a particular frequency
 // This assumes the frequency bins are spaced equally!
 //
-static inline size_t index_from_frequency(const double frequency, const std::vector<FrequencyBin>& bins)
+static inline size_t index_from_frequency(const double frequency, const std::vector<frequency_bin_t>& bins)
 {
     if (bins.size() == 0)
     {
@@ -49,7 +49,7 @@ static inline size_t index_from_frequency(const double frequency, const std::vec
 // Get the frequency that corresponds to a particular index
 // This assumes the frequency bins are spaced equally!
 //
-static inline double frequency_from_index(const size_t index, const std::vector<FrequencyBin>& bins)
+static inline double frequency_from_index(const size_t index, const std::vector<frequency_bin_t>& bins)
 {
     if (bins.size() == 0)
     {
@@ -64,7 +64,7 @@ static inline double frequency_from_index(const size_t index, const std::vector<
 // Compute FFT on time domain sample non-complex number. I'm using a circular buffer since that's
 // how the data will be formatted
 //
-static std::vector<FrequencyBin> compute_fft(const boost::circular_buffer<T>& time_domain_samples)
+static std::vector<frequency_bin_t> compute_fft(const boost::circular_buffer<T>& time_domain_samples)
 {
     //
     // Take the raw float data and create a complex array with it
@@ -82,7 +82,7 @@ static std::vector<FrequencyBin> compute_fft(const boost::circular_buffer<T>& ti
 //
 // Save some compute, if you've already got a complex vector
 //
-static std::vector<FrequencyBin> compute_fft(const std::vector<ComplexT>& time_domain_samples)
+static std::vector<frequency_bin_t> compute_fft(const std::vector<ComplexT>& time_domain_samples)
 {
     //
     // Compute the FFT over the complex data
@@ -95,7 +95,7 @@ static std::vector<FrequencyBin> compute_fft(const std::vector<ComplexT>& time_d
     //
     const size_t frequency_bins = transformed_complex_data.size() / 2;
 
-    std::vector<FrequencyBin> bins;
+    std::vector<frequency_bin_t> bins;
     bins.resize(frequency_bins);
     for (size_t i = 0; i < frequency_bins; ++i)
     {
@@ -109,9 +109,9 @@ static std::vector<FrequencyBin> compute_fft(const std::vector<ComplexT>& time_d
 //
 // Generate a map: frequency->magnitude in some frequency range
 //
-static std::vector<FrequencyBin> get_frequencies_in_range(const double frequency_min,
+static std::vector<frequency_bin_t> get_frequencies_in_range(const double frequency_min,
                                                           const double frequency_max,
-                                                          const std::vector<FrequencyBin>& fft_data)
+                                                          const std::vector<frequency_bin_t>& fft_data)
 {
     const size_t index_min = index_from_frequency(frequency_min, fft_data);
     const size_t index_max = index_from_frequency(frequency_max, fft_data);
@@ -121,7 +121,7 @@ static std::vector<FrequencyBin> get_frequencies_in_range(const double frequency
         throw "can't get frequencies in range!";
     }
 
-    std::vector<FrequencyBin> in_range;
+    std::vector<frequency_bin_t> in_range;
     for(size_t i = index_min; i <= index_max; ++i)
     {
         in_range.push_back(fft_data[i]);

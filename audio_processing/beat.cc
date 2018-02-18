@@ -68,10 +68,10 @@ int main(void)
     // The audio manager deals with pulling audio from the sound card. The queue needs to
     // be passed in as a void pointer, which causes some weirdness down the line
     //
-    audio::AudioManager manager;
+    audio::audio_manager manager;
     manager.make_good_record_callback(record_callback, static_cast<void*>(&queue));
 
-    Beats::DumbBeatFinder beat_finder;
+    Beats::dumb_beat_finder beat_finder;
     bool last_beat = false;
 
     typedef fft::fft_helpers<float, audio::SAMPLE_RATE> fft;
@@ -99,7 +99,7 @@ int main(void)
             continue;
         t.reset();
 
-        std::vector<fft::FrequencyBin> bins {fft::compute_fft(fft_data)};
+        std::vector<fft::frequency_bin_t> bins {fft::compute_fft(fft_data)};
         constexpr double MIN_FREQ = 20;
         constexpr double MAX_FREQ = 200;
         beat_finder.add_sample(fft::get_frequencies_in_range(MIN_FREQ, MAX_FREQ, bins));

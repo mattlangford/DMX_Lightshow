@@ -13,7 +13,7 @@ namespace serial
 // ### constructor ############################################################
 //
 
-SerialConnection::SerialConnection(const size_t baudrate, const size_t device_number)
+serial_connection::serial_connection(const size_t baudrate, const size_t device_number)
 {
     DWORD number_of_devices;
     assert(FT_CreateDeviceInfoList(&number_of_devices) == FT_OK);
@@ -54,7 +54,7 @@ SerialConnection::SerialConnection(const size_t baudrate, const size_t device_nu
 // ############################################################################
 //
 
-SerialConnection::SerialConnection(const SerialConnection &s)
+serial_connection::serial_connection(const serial_connection &s)
 {
     ft_handle = s.ft_handle;
 }
@@ -63,7 +63,7 @@ SerialConnection::SerialConnection(const SerialConnection &s)
 // ############################################################################
 //
 
-SerialConnection::~SerialConnection()
+serial_connection::~serial_connection()
 {
     FT_SetBitMode(ft_handle, 0x0, 0x00);
     FT_Close(ft_handle);
@@ -73,7 +73,7 @@ SerialConnection::~SerialConnection()
 // ### public methods #########################################################
 //
 
-bool SerialConnection::write_data(ByteVector_t data) const
+bool serial_connection::write_data(ByteVector_t data) const
 {
     const unsigned int bytes_to_send = data.size();
     unsigned int bytes_sent = 0;
@@ -91,7 +91,7 @@ bool SerialConnection::write_data(ByteVector_t data) const
 // ### private methods ########################################################
 //
 
-inline bool SerialConnection::status_okay(const FT_STATUS ft_status) const
+inline bool serial_connection::status_okay(const FT_STATUS ft_status) const
 {
     if (ft_status != FT_OK)
     {

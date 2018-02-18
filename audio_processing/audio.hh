@@ -39,13 +39,13 @@ private: // private members ///////////////////////////////////////////////////
 //
 // Crates the port audio stuff and provides an easy way to do callbacks
 //
-class AudioManager
+class audio_manager
 {
 public: // constructor ////////////////////////////////////////////////////////
     //
     //
     //
-    AudioManager()
+    audio_manager()
     {
         PaError err = Pa_Initialize();
         if( err != paNoError )
@@ -63,7 +63,7 @@ public: // constructor ////////////////////////////////////////////////////////
     //
     //
     //
-    ~AudioManager()
+    ~audio_manager()
     {
         PaError err = paNoError;
 

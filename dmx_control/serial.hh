@@ -15,14 +15,14 @@ using ByteVector_t = std::vector<BYTE>;
 // Connects to an FTDI serial connection and has some nice wrappers C++11 around the
 // gross C
 //
-class SerialConnection
+class serial_connection
 {
 public: // constructor ////////////////////////////////////////////////////////
-    SerialConnection(const size_t baudrate, const size_t device_number = 0);
+    serial_connection(const size_t baudrate, const size_t device_number = 0);
 
-    SerialConnection(const SerialConnection &s);
+    serial_connection(const serial_connection &s);
 
-    ~SerialConnection();
+    ~serial_connection();
 
 public: // public methods /////////////////////////////////////////////////////
     //
