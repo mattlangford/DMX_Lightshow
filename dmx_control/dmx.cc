@@ -8,7 +8,7 @@ serial::ByteVector_t dmx_helper::generate_message_from_channels(const channels_t
     // we will keep an ordered buffer of the channel data in this vector, which will be transformed into
     // bits, headers added, and then serialized out
     // TODO: Might need to do some stuff with the zero channel
-    std::vector<uint8_t> ordered_channels(NUM_CHANNELS);
+    std::vector<uint8_t> ordered_channels(MAX_NUM_CHANNELS);
     size_t max_address = 0;
     for (const channel_t& channel : channels)
     {
@@ -96,7 +96,7 @@ std::vector<bool> dmx_helper::generate_channel(const uint8_t level)
 // ############################################################################
 //
 
-std::vector<uint8_t> dmx_helper::packet_bits(std::vector<bool> bits)
+std::vector<uint8_t> dmx_helper::packet_bits(const std::vector<bool>& bits)
 {
     const size_t num_bytes = bits.size() / BYTE_SIZE;
 

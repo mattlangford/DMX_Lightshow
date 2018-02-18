@@ -1,6 +1,7 @@
 cc_library(
     name="light_base",
     hdrs=["light_base.hh"],
+    visibility = ["//visibility:public"],
     deps=["//dmx_control:dmx_helpers"]
 )
 

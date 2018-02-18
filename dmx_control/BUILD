@@ -13,10 +13,18 @@ cc_library(
     deps=[":serial_comms"]
 )
 
+cc_library(
+    name="light_universe_controller",
+    srcs=["light_universe_controller.cc"],
+    hdrs=["light_universe_controller.hh"],
+    deps=["//dmx_control/lights:light_base"]
+)
+
 cc_binary(
     name="test_dmx",
     srcs=["test_dmx.cc"],
     deps=[":serial_comms",
           ":dmx_helpers",
-          "//dmx_control/lights:litake_basic_light"]
+          "//dmx_control/lights:litake_basic_light",
+          ":light_universe_controller"]
 )
