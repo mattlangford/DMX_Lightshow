@@ -11,6 +11,8 @@ namespace lights
 class litake_basic_light final : public light_base
 {
 public: // types //////////////////////////////////////////////////////////////
+    typedef std::shared_ptr<litake_basic_light> ptr;
+
     static constexpr size_t NUM_CHANNELS = 4;
 
 public: // constructor ////////////////////////////////////////////////////////

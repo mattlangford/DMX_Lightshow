@@ -103,9 +103,10 @@ std::vector<uint8_t> dmx_helper::packet_bits(const std::vector<bool>& bits)
     std::vector<uint8_t> bytes(num_bytes, 0);
     for (size_t byte = 0; byte < num_bytes; ++byte)
     {
+        size_t shift = BYTE_SIZE - 1;
         for (size_t bit = 0; bit < BYTE_SIZE; ++bit)
         {
-            bytes[byte] += bits[byte * BYTE_SIZE + bit] << (BYTE_SIZE - bit - 1);
+            bytes[byte] += bits[byte * BYTE_SIZE + bit] << shift--;
         }
     }
 
@@ -116,9 +117,10 @@ std::vector<uint8_t> dmx_helper::packet_bits(const std::vector<bool>& bits)
     {
         bytes.push_back(0);
         uint8_t& last_byte = bytes.back();
+        size_t shift = BYTE_SIZE - 1;
         for (size_t bit = 0; bit < extra_bits; ++bit)
         {
-            last_byte += bits[bits.size() - extra_bits + bit] << (BYTE_SIZE - bit - 1);
+            last_byte += bits[bits.size() - extra_bits + bit] << shift--;
         }
     }
 

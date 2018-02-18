@@ -52,7 +52,9 @@ void light_universe_controller::do_update()
     }
 
     serial::ByteVector_t data_to_send = dmx::dmx_helper::generate_message_from_channels(channels);
-    connection_.write_data( dmx::dmx_helper::generate_message_from_channels(channels););
+    for (uint16_t t: data_to_send) std::cout << t << ", ";
+    std::cout <<"\n";
+    connection_.write_data(data_to_send);
 }
 
 //
