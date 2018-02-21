@@ -28,23 +28,19 @@ serial_connection::serial_connection(const size_t baudrate, const size_t device_
     // Try to open it
     //
     assert(FT_Open(device_number, &ft_handle) == FT_OK);
+    assert(FT_ResetDevice(ft_handle) == FT_OK);
     std::cout << "Device opened successfully!" << std::endl;
 
 
-    //
-    // Now let's configure our device, to do that first we need to reset the receive buffer
-    //
-    // Set BAUD rate
-    constexpr size_t DMX_BAUDRATE = 250000;
-    assert(FT_SetBaudRate(ft_handle, DMX_BAUDRATE) == FT_OK);
-    std::cout << "Baudrate set to " << DMX_BAUDRATE << "\n";
-    // Flow control set to none
-    assert(FT_SetFlowControl(ft_handle, FT_FLOW_NONE, 0, 0) == FT_OK);
-    std::cout << "Flow control configured\n";
+    // Set BAUD rate, this needs to have this factor divided out in bitbang mode...
+    constexpr size_t NON_ARBITRARY_FACTOR = 5;
+    assert(FT_SetBaudRate(ft_handle, baudrate / NON_ARBITRARY_FACTOR) == FT_OK);
+    std::cout << "Baudrate set to " << baudrate << "\n";
     // Enable RS485 mode
-    constexpr uint8_t RS485_MODE = 0x20;
-    constexpr uint8_t PIN_MASK = 0x66;
-    assert(FT_SetBitMode(ft_handle, PIN_MASK, RS485_MODE) == FT_OK);
+    //constexpr uint8_t RS485_MODE = 0x20;
+    constexpr uint8_t ASYNC_BITBANG = 0x01;
+    constexpr uint8_t PIN_MASK = 0xFF;
+    assert(FT_SetBitMode(ft_handle, PIN_MASK, ASYNC_BITBANG) == FT_OK);
     std::cout << "Bit bang mode configured\n";
 
     std::cout << "Ready to transmit data!\n";

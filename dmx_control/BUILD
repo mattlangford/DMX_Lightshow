@@ -28,3 +28,8 @@ cc_binary(
           "//dmx_control/lights:litake_basic_light",
           ":light_universe_controller"]
 )
+cc_binary(
+    name="test_serial",
+    srcs=["test_serial.cc"],
+    deps=[":serial_comms"]
+)
