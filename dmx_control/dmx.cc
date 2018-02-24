@@ -19,7 +19,7 @@ std::vector<bool> dmx_helper::generate_message_from_channels(const channels_t& c
 
         ordered_channels[channel.address] = channel.level;
     }
-    ordered_channels.resize(10);
+    ordered_channels.resize(max_address + 1);
 
     std::vector<bool> full_bit_vector;
 

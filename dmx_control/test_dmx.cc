@@ -12,17 +12,17 @@ int main()
     light->set_color(0, 255, 0);
 
     serial::serial_connection connection(dmx::BAUDRATE);
-    lights::light_universe_controller universe(connection, 0.02);
+
+    lights::light_universe_controller::controller_params params;
+    params.control = lights::light_universe_controller::control_type::MANUAL;
+    params.enforce_44hz = true;
+    lights::light_universe_controller universe(connection, params);
+
     universe.add_light_to_universe(light);
 
     while (true)
     {
-        light->set_color(255, 0, 0);
-        std::this_thread::sleep_for(std::chrono::duration<double>(1));
-        light->set_color(0, 255, 0);
-        std::this_thread::sleep_for(std::chrono::duration<double>(1));
-        light->set_color(0, 0, 255);
-        std::this_thread::sleep_for(std::chrono::duration<double>(1));
+        universe.do_update();
     }
 
 }
