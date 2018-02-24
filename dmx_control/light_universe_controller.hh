@@ -2,6 +2,7 @@
 #include "lights/light_base.hh"
 #include "serial.hh"
 
+#include <atomic>
 #include <memory>
 #include <thread>
 
@@ -12,6 +13,8 @@ class light_universe_controller
 {
 public:
     light_universe_controller(serial::serial_connection& connection, double update_period);
+
+    ~light_universe_controller();
 
 public:
     // add a new light, return if the add was successful
@@ -36,6 +39,7 @@ private:
     std::array<bool, dmx::MAX_NUM_CHANNELS> valid_addresses_;
 
     // handle to the main executive runner thread
+    std::atomic_bool running_;
     std::thread executive_handle_;
 };
 

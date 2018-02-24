@@ -10,9 +10,23 @@ light_universe_controller::light_universe_controller(serial::serial_connection& 
                                                      double update_period)
     : connection_(connection),
       update_period_(std::chrono::duration<double>(update_period)),
+      running_(true),
       executive_handle_([this](){executive_thread();})
 {
     valid_addresses_.fill(true);
+}
+
+//
+// ############################################################################
+//
+
+light_universe_controller::~light_universe_controller()
+{
+    running_ = false;
+    if (executive_handle_.joinable())
+    {
+        executive_handle_.join();
+    }
 }
 
 //
@@ -51,10 +65,13 @@ void light_universe_controller::do_update()
         }
     }
 
-    serial::ByteVector_t data_to_send = dmx::dmx_helper::generate_message_from_channels(channels);
-    for (uint16_t t: data_to_send) std::cout << t << ", ";
-    std::cout <<"\n";
-    connection_.write_data(data_to_send);
+    // message, where each bool is a bit in the data stream
+    const std::vector<bool> message = dmx::dmx_helper::generate_message_from_channels(channels);
+
+    // packed message, where each byte is contains a single bit of data, which will be used to simulate a differential pair
+    const serial::ByteVector_t packed_message_to_send = dmx::dmx_helper::simulate_differential_pair(message);
+
+    connection_.write_data(packed_message_to_send);
 }
 
 //
@@ -63,10 +80,9 @@ void light_universe_controller::do_update()
 
 void light_universe_controller::executive_thread()
 {
-    while (true)
+    while (running_)
     {
         std::this_thread::sleep_for(update_period_);
-        std::cout << "Update!\n";
         do_update();
     }
 }

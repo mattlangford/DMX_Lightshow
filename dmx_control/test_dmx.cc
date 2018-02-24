@@ -9,11 +9,20 @@
 int main()
 {
     lights::litake_basic_light::ptr light = std::make_shared<lights::litake_basic_light>(1);
-    light->set_color(255, 0, 255);
+    light->set_color(0, 255, 0);
 
     serial::serial_connection connection(dmx::BAUDRATE);
-    lights::light_universe_controller universe(connection, 1.0);
+    lights::light_universe_controller universe(connection, 0.02);
     universe.add_light_to_universe(light);
 
-    std::this_thread::sleep_for(std::chrono::duration<double>(30.0));
+    while (true)
+    {
+        light->set_color(255, 0, 0);
+        std::this_thread::sleep_for(std::chrono::duration<double>(1));
+        light->set_color(0, 255, 0);
+        std::this_thread::sleep_for(std::chrono::duration<double>(1));
+        light->set_color(0, 0, 255);
+        std::this_thread::sleep_for(std::chrono::duration<double>(1));
+    }
+
 }

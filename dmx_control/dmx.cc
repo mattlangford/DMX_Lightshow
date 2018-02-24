@@ -3,7 +3,7 @@
 
 namespace dmx
 {
-serial::ByteVector_t dmx_helper::generate_message_from_channels(const channels_t& channels)
+std::vector<bool> dmx_helper::generate_message_from_channels(const channels_t& channels)
 {
     // we will keep an ordered buffer of the channel data in this vector, which will be transformed into
     // bits, headers added, and then serialized out
@@ -19,7 +19,7 @@ serial::ByteVector_t dmx_helper::generate_message_from_channels(const channels_t
 
         ordered_channels[channel.address] = channel.level;
     }
-    ordered_channels.resize(max_address + 1);
+    ordered_channels.resize(10);
 
     std::vector<bool> full_bit_vector;
 
@@ -35,9 +35,27 @@ serial::ByteVector_t dmx_helper::generate_message_from_channels(const channels_t
         std::copy(channel_bits.begin(), channel_bits.end(), std::back_inserter(full_bit_vector));
     }
 
-    auto message = packet_bits(full_bit_vector);
+    return full_bit_vector;
+}
 
-    return {message.begin(), message.end()};
+//
+// ############################################################################
+//
+
+serial::ByteVector_t dmx_helper::simulate_differential_pair(const std::vector<bool>& bits)
+{
+    constexpr uint8_t HI_BIT = 0x01;
+    constexpr uint8_t LO_BIT = 0x02;
+
+    serial::ByteVector_t differential_pair_bytes;
+    differential_pair_bytes.reserve(bits.size());
+    for (const bool bit : bits)
+    {
+        differential_pair_bytes.push_back(bit ? HI_BIT : LO_BIT);
+    }
+    differential_pair_bytes.push_back(LO_BIT);
+
+    return differential_pair_bytes;
 }
 
 //

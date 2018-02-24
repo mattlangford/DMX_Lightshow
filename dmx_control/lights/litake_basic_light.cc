@@ -1,4 +1,5 @@
 #include "litake_basic_light.hh"
+#include <iostream>
 
 namespace lights
 {

@@ -22,8 +22,11 @@ public: ///////////////////////////////////////////////////////////////////////
     // Vector of up to 512 channels
     typedef std::vector<channel_t> channels_t;
 
-    // Serialize the channels into a byte stream to send over the wire, this will include the header
-    static serial::ByteVector_t generate_message_from_channels(const channels_t& channels);
+    // Serialize the channels into a bit stream to send over the wire, this will include the header
+    static std::vector<bool> generate_message_from_channels(const channels_t& channels);
+
+    // Simulate a differential pair using the first two bits (always inverted)
+    static serial::ByteVector_t simulate_differential_pair(const std::vector<bool>& bits);
 
 private: //////////////////////////////////////////////////////////////////////
     // Header is 28 bits, with a break followed by the mark after break (MAB)
