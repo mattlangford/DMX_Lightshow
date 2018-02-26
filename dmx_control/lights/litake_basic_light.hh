@@ -25,7 +25,7 @@ public: // methods ////////////////////////////////////////////////////////////
     void set_color(uint8_t red, uint8_t green, uint8_t blue);
 
     // sets modifier params
-    void set_off();
+    void set_off() override;
     // flash speed should be in [1, 127]
     void set_flash(uint8_t flash_speed);
     // brightness speed should be in [1, 127]

@@ -41,7 +41,7 @@ void litake_basic_light::set_off()
 
 void litake_basic_light::set_flash(uint8_t flash_speed)
 {
-    uint8_t value_to_set = std::min<uint8_t>(1, std::max<uint8_t>(value_to_set, 127));
+    uint8_t value_to_set = std::min<uint8_t>(1, std::max<uint8_t>(value_to_set, 127)) + 128;
     mod_state_value_.store(value_to_set, std::memory_order_relaxed);
 }
 
@@ -51,7 +51,7 @@ void litake_basic_light::set_flash(uint8_t flash_speed)
 
 void litake_basic_light::set_brightness(uint8_t brightness)
 {
-    uint8_t value_to_set = std::min<uint8_t>(0, std::max<uint8_t>(brightness, 127)) + 128;
+    uint8_t value_to_set = std::min<uint8_t>(0, std::max<uint8_t>(brightness, 127));
     mod_state_value_.store(value_to_set, std::memory_order_relaxed);
 }
 

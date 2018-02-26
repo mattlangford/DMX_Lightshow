@@ -22,10 +22,19 @@ light_universe_controller::light_universe_controller(serial::serial_connection& 
 light_universe_controller::~light_universe_controller()
 {
     running_ = false;
+
+    for (lights::light_base::ptr light : lights_)
+    {
+        light->set_off();
+    }
+
     if (executive_handle_.joinable())
     {
         executive_handle_.join();
     }
+
+    // one last update to turn off lights
+    do_update();
 }
 
 //
@@ -82,7 +91,6 @@ void light_universe_controller::do_update()
 
         // keep track of the current time for the next time this is called
         auto updated_now = std::chrono::high_resolution_clock::now();
-        std::cout << std::chrono::duration<double>(updated_now - last_update_time_).count() << "\n";
         last_update_time_ = std::move(updated_now);
     }
 

@@ -31,5 +31,8 @@ public: // methods ////////////////////////////////////////////////////////////
 
     // get the channels this light has to offer
     virtual std::vector<dmx::dmx_helper::channel_t> get_channels() = 0;
+
+    // every light should be able to turn off
+    virtual void set_off() = 0;
 };
 }
