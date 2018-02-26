@@ -47,10 +47,10 @@ public: // methods ////////////////////////////////////////////////////////////
         long_average += power;
         short_average += power;
 
-        std::cout << "power: " << power << "\n";
-        std::cout << "long_average: " << long_average << "\n";
-        std::cout << "short_average: " << short_average << "\n";
-        std::cout << "in_beat: " << is_in_beat() << "\n\n";
+        // std::cout << "power: " << power << "\n";
+        // std::cout << "long_average: " << long_average << "\n";
+        // std::cout << "short_average: " << short_average << "\n";
+        // std::cout << "in_beat: " << is_in_beat() << "\n\n";
     }
 
     //
@@ -63,7 +63,7 @@ public: // methods ////////////////////////////////////////////////////////////
     }
 
 private: // members ///////////////////////////////////////////////////////////
-    static constexpr size_t NUM_SAMPLES_LONG = 50;
+    static constexpr size_t NUM_SAMPLES_LONG = 20;
     Averager<double, NUM_SAMPLES_LONG> long_average;
 
     static constexpr size_t NUM_SAMPLES_SHORT = 1;

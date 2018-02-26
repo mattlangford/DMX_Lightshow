@@ -10,5 +10,7 @@ cc_library(
 cc_binary(
     name="beats",
     srcs=["beat.cc"],
-    deps=[":audio"]
+    deps=[":audio",
+          "//dmx_control:light_universe_controller",
+          "//dmx_control/lights:litake_basic_light"]
 )

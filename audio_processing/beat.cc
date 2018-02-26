@@ -11,6 +11,9 @@
 #include "fft_helpers.hh"
 #include "beat_finders.hh"
 
+#include "../dmx_control/light_universe_controller.hh"
+#include "../dmx_control/lights/litake_basic_light.hh"
+
 class Timer {
 public:
     Timer() :
@@ -76,6 +79,18 @@ int main(void)
 
     typedef fft::fft_helpers<float, audio::SAMPLE_RATE> fft;
 
+    lights::litake_basic_light::ptr light = std::make_shared<lights::litake_basic_light>(1);
+    light->set_color(0, 0, 255);
+
+    serial::serial_connection connection(dmx::BAUDRATE);
+
+    lights::light_universe_controller::controller_params params;
+    params.control = lights::light_universe_controller::control_type::MANUAL;
+    params.enforce_44hz = true;
+    lights::light_universe_controller universe(connection, params);
+
+    universe.add_light_to_universe(light);
+
     Timer t;
     constexpr size_t POP_AMOUNT = 2048;
     float result[POP_AMOUNT];
@@ -100,20 +115,33 @@ int main(void)
         t.reset();
 
         std::vector<fft::frequency_bin_t> bins {fft::compute_fft(fft_data)};
-        constexpr double MIN_FREQ = 20;
-        constexpr double MAX_FREQ = 200;
-        beat_finder.add_sample(fft::get_frequencies_in_range(MIN_FREQ, MAX_FREQ, bins));
+        constexpr double MIN_FREQ = 25;
+        constexpr double MAX_FREQ = 150;
+        std::vector<fft::frequency_bin_t> bandpassed = fft::get_frequencies_in_range(MIN_FREQ, MAX_FREQ, bins);
+        beat_finder.add_sample(bandpassed);
         if (beat_finder.is_in_beat())
         {
             // we weren't in a beat already
             if (last_beat == false)
             {
+                size_t sum = 0;
+                for (const auto b : bandpassed)
+                {
+                    sum += b.amplitude;
+                }
+                std::cout << sum << "\n";
+
+                light->set_color(255,0,255);
+                universe.do_update();
+
                 last_beat = true;
                 std::cout << "BEAT\n";
             }
         }
         else
         {
+            light->set_color(0,0,255);
+            universe.do_update();
             last_beat = false;
         }
     }
