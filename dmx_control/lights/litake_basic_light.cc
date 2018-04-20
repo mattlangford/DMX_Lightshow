@@ -17,11 +17,11 @@ void litake_basic_light::set_color(uint8_t red, uint8_t green, uint8_t blue)
 {
     uint32_t color = 0;
 
-    color += red;
+    color += blue;
     color <<= 8;
     color += green;
     color <<= 8;
-    color += blue;
+    color += red;
 
     light_state_.store(color, std::memory_order_relaxed);
 }
