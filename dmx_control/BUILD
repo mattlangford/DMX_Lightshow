@@ -21,6 +21,13 @@ cc_library(
     deps=["//dmx_control/lights:light_base"]
 )
 
+cc_library(
+    name="light_effects",
+    srcs=[],
+    hdrs=["light_effects.hh"],
+    visibility = ["//visibility:public"],
+)
+
 cc_binary(
     name="test_dmx",
     srcs=["test_dmx.cc"],
