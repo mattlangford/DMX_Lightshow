@@ -79,7 +79,18 @@ struct smooth_transition_strategy
     {
         constexpr double VERTICAL_OFFSET = 1;
         constexpr double SCALE_FACTOR = 0.5;
-        return (std::cos(x / M_PI) + VERTICAL_OFFSET) * SCALE_FACTOR;
+        return 1.0 - (std::cos(x * M_PI) + VERTICAL_OFFSET) * SCALE_FACTOR;
+    }
+};
+
+///
+/// Does a sharp instant transition, goes from start to end immediately
+///
+struct instant_transition_strategy
+{
+    constexpr static double map(const double x)
+    {
+        return 1.0;
     }
 };
 
