@@ -6,4 +6,4 @@ You'll need libportaudio library, so follow [the instructions here](http://porta
 
 There are some boost includes, so make sure those exist
 
-Then `bazel build //...:all --cxxopt='-std=c++1z't`
+Then `bazel build //...:all --cxxopt='-std=c++1z'`
